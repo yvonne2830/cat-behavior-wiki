@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新手貓奴必修課：用行為學讀懂主子的心｜LLM Wiki 教學簡報</title>
+  <style>
+    :root {
+      --bg-color: #faf8f5;
+      --card-bg: #ffffff;
+      --primary: #d97706;
+      --primary-dark: #92400e;
+      --primary-light: #fef3c7;
+      --accent: #0f766e;
+      --accent-light: #f0fdfa;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --border-color: #fde68a;
+      --danger: #dc2626;
+      --danger-bg: #fef2f2;
+      --success: #059669;
+      --success-bg: #ecfdf5;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Microsoft JhengHei", "PingFang TC", sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .progress-bar {
+      height: 6px;
+      background: #e2e8f0;
+      width: 100%;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #f59e0b, #d97706);
+      width: 14.28%;
+      transition: width 0.3s ease;
+    }
+    .stage {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 36px;
+      overflow-y: auto;
+    }
+    .slide {
+      display: none;
+      width: 100%;
+      max-width: 1060px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 44px 54px;
+      box-shadow: 0 20px 45px rgba(146, 64, 14, 0.08);
+      border: 2px solid var(--border-color);
+      animation: slideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .slide.active { display: block; }
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .tag {
+      display: inline-block;
+      background: var(--primary-light);
+      color: var(--primary-dark);
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 14px;
+      letter-spacing: 0.5px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      color: var(--primary-dark);
+      line-height: 1.28;
+      margin-bottom: 16px;
+    }
+    h2 {
+      font-size: 1.85rem;
+      color: var(--primary-dark);
+      margin-bottom: 18px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--primary-light);
+    }
+    p.lead {
+      font-size: 1.18rem;
+      color: #475569;
+      line-height: 1.7;
+      margin-bottom: 20px;
+    }
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-top: 14px;
+    }
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 14px;
+    }
+    .card {
+      background: #fffbeb;
+      border: 1px solid #fde68a;
+      border-radius: 14px;
+      padding: 20px;
+    }
+    .card.teal {
+      background: var(--accent-light);
+      border-color: #99f6e4;
+    }
+    .card h3 {
+      font-size: 1.2rem;
+      color: var(--primary-dark);
+      margin-bottom: 10px;
+    }
+    .card.teal h3 {
+      color: var(--accent);
+    }
+    ul { margin-left: 20px; }
+    li {
+      font-size: 1.05rem;
+      line-height: 1.68;
+      margin-bottom: 8px;
+      color: #334155;
+    }
+    .callout {
+      margin-top: 18px;
+      padding: 16px 20px;
+      border-radius: 12px;
+      background: #fff7ed;
+      border-left: 5px solid var(--primary);
+      font-size: 1.05rem;
+      line-height: 1.6;
+    }
+    table.myth-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      font-size: 0.98rem;
+    }
+    table.myth-table th {
+      background: var(--primary-dark);
+      color: #fff;
+      text-align: left;
+      padding: 11px 14px;
+    }
+    table.myth-table td {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      line-height: 1.5;
+    }
+    table.myth-table tr:nth-child(even) { background: #f8fafc; }
+    .badge-no {
+      color: var(--danger);
+      font-weight: 700;
+    }
+    .badge-yes {
+      color: var(--success);
+      font-weight: 700;
+    }
+    .step-badge {
+      display: inline-block;
+      background: var(--accent);
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 3px 10px;
+      border-radius: 6px;
+      margin-bottom: 6px;
+    }
+    .wiki-footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px dashed #cbd5e1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+      color: var(--text-muted);
+    }
+    .wiki-pill {
+      background: #f1f5f9;
+      padding: 3px 10px;
+      border-radius: 6px;
+      font-family: monospace;
+      color: #334155;
+    }
+    .controls {
+      height: 68px;
+      background: #ffffff;
+      border-top: 1px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+    }
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    button:hover { background: var(--primary-dark); }
+    button:disabled { background: #cbd5e1; cursor: not-allowed; }
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+    .dots { display: flex; gap: 6px; }
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      cursor: pointer;
+    }
+    .dot.active { background: var(--primary); transform: scale(1.25); }
+    @media (max-width: 768px) {
+      .grid-2, .grid-3 { grid-template-columns: 1fr; }
+      .slide { padding: 28px 24px; }
+      h1 { font-size: 1.8rem; }
+      h2 { font-size: 1.45rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+  <div class="stage">
+    <!-- Slide 1 -->
+    <div class="slide active">
+      <span class="tag">🐱 LLM Wiki 互動教學簡報｜新手貓奴入門</span>
+      <h1>新手貓奴必修課：<br>用行為學讀懂主子的心</h1>
+      <p class="lead">
+        剛開始養貓時，人類常習慣用「狗的邏輯」或「人類的心機」去猜測貓咪。本簡報基於 <strong>貓咪行為學 LLM Wiki</strong>，帶你從作息天性、肢體語言、聲音到嗅覺密碼，一次建立正確的跨物種溝通力。
+      </p>
+      <div class="grid-3">
+        <div class="card">
+          <h3>1. 生理與領域天性</h3>
+          <p>為何半夜愛跑酷？為何喜歡用臉蹭人？</p>
+        </div>
+        <div class="card">
+          <h3>2. 肢體、聲音與嗅覺</h3>
+          <p>看懂甩尾、呼嚕、踩奶與張嘴呆滯的真相。</p>
+        </div>
+        <div class="card">
+          <h3>3. 迷思破解與實戰</h3>
+          <p>告別打罵與誤解，掌握三步驟問題行為指南。</p>
+        </div>
+      </div>
+      <div class="wiki-footer">
+        <span>💡 操作提示：可使用鍵盤方向鍵（← / →）或點擊下方按鈕翻頁</span>
+        <span class="wiki-pill">溯源：index.md</span>
+      </div>
+    </div>
+
+    <!-- Slide 2 -->
+    <div class="slide">
+      <span class="tag">模組 01｜作息天性與領域觀念</span>
+      <h2>為何半夜愛跑酷？為何總愛磨蹭家具？</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>🌙 晨昏性（Crepuscular）與狩獵本能</h3>
+          <ul>
+            <li><strong>生理節律：</strong>家貓保留野生祖先「黎明與黃昏」最清醒活躍的天性，因此清晨或深夜容易精神旺盛、在家高速奔跑。</li>
+            <li><strong>伏擊獵食者：</strong>日常的潛伏、跟蹤、撲擊都是模擬狩獵，需要透過規律玩具互動來消耗精力。</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h3>🫧 臉頰磨蹭（Bunting）與氣味標記</h3>
+          <ul>
+            <li><strong>友善費洛蒙：</strong>貓咪臉頰兩側、下巴與額頭有費洛蒙腺體，磨蹭家具或飼主腳邊是在留下友善氣味，將你納入「安全領域」。</li>
+            <li><strong>抓撓雙重記號：</strong>抓撓不只磨掉老廢爪鞘，前爪肉墊的汗腺與氣味腺也會留下視覺與嗅覺標記，建立環境安全感。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>新手心法：</strong>貓咪磨蹭你不是因為皮膚癢，而是把你認證為「自己人」；半夜活躍則是生理時鐘，而非故意搗蛋。
+      </div>
+      <div class="wiki-footer">
+        <span>知識庫對應條目：作息天性與費洛蒙領域標記</span>
+        <span class="wiki-pill">[[activity-and-territory]]（raw/01）</span>
+      </div>
+    </div>
+
+    <!-- Slide 3 -->
+    <div class="slide">
+      <span class="tag">模組 02｜肢體與眼神密碼</span>
+      <h2>一秒讀懂情緒：尾巴姿態、露肚與慢眨眼</h2>
+      <div class="grid-3">
+        <div class="card">
+          <h3>⬆️ 尾巴高豎（尾端微勾）</h3>
+          <p>心情愉快、友善且主動打招呼，常見於迎接飼主回家或準備討食時，可溫柔輕撫頭頰。</p>
+        </div>
+        <div class="card">
+          <h3>⬇️ 尾巴低垂或夾緊</h3>
+          <p>感到恐懼、不安、順從或身體不適。此時應給予安靜躲藏空間，切勿強迫抱起。</p>
+        </div>
+        <div class="card" style="background:#fef2f2; border-color:#fecaca;">
+          <h3 style="color:#b91c1c;">↔️ 快速左右大力甩動</h3>
+          <p><strong>與狗完全相反！</strong>代表不耐煩、煩躁或高度警戒，請<strong>立即停止撫摸</strong>以免被抓咬。</p>
+        </div>
+      </div>
+      <div class="grid-2" style="margin-top:16px;">
+        <div class="card teal">
+          <h3>🐾 翻肚露腹＝高度信任（但未必想被摸）</h3>
+          <p>腹部是貓咪最脆弱的要害，主動翻滾露肚代表極度信任環境與飼主，但多數貓咪並不喜歡人類直接搓揉肚子。</p>
+        </div>
+        <div class="card teal">
+          <h3>👀 眼睛半瞇與慢眨眼（貓咪之吻）</h3>
+          <p>眼神柔和半瞇代表毫無防備；飼主對貓咪緩慢眨眼，是跨物種傳遞善意的「貓咪之吻」。</p>
+        </div>
+      </div>
+      <div class="wiki-footer">
+        <span>知識庫對應條目：尾巴與肢體情緒密碼</span>
+        <span class="wiki-pill">[[tail-and-body-signals]]（raw/01）</span>
+      </div>
+    </div>
+
+    <!-- Slide 4 -->
+    <div class="slide">
+      <span class="tag">模組 03｜聲音訊號與依戀本能</span>
+      <h2>呼嚕聲（Purring）與踩奶（Kneading）的真相</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>🔊 呼嚕聲（25–150 Hz）的四重意義</h3>
+          <ul>
+            <li><strong>社交與滿足：</strong>被撫摸、吃美食或幼貓吸奶時的安撫訊號。</li>
+            <li><strong>恐懼與疼痛鎮定：</strong>看獸醫緊張、受傷或生病時也會呼嚕自我安撫。</li>
+            <li><strong>生理修復假說：</strong><strong>25–50 Hz</strong> 低頻振動有助刺激骨骼生長、促進組織修復與減輕疼痛。</li>
+            <li><strong>索食型呼嚕：</strong>肚子餓時混入類似嬰兒哭聲的高頻音調催促餵食。</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h3>🍞 踩奶（踏踏）的三大行為成因</h3>
+          <ul>
+            <li><strong>幼貓哺乳記憶：</strong>重現幼年期交替按壓母貓乳腺、刺激乳汁分泌的安全感。</li>
+            <li><strong>野生祖先築巢本能：</strong>模擬祖先踩平高草叢與落葉製作睡窩、確認無蛇蟲危險。</li>
+            <li><strong>肉墊費洛蒙標記：</strong>透過前爪肉墊腺體留下氣味，宣示親密依戀。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="callout">
+        <strong>飼主提醒：</strong>若貓咪躲在角落無故持續呼嚕，可能是身體疼痛警訊；踩奶時若覺得刺痛，請<strong>修剪指甲或墊厚毛毯</strong>，切勿斥責推開。
+      </div>
+      <div class="wiki-footer">
+        <span>知識庫對應條目：呼嚕聲機制、踩奶行為</span>
+        <span class="wiki-pill">[[purring-mechanism]] / [[kneading-behavior]]（raw/02, 03）</span>
+      </div>
+    </div>
+
+    <!-- Slide 5 -->
+    <div class="slide">
+      <span class="tag">模組 04｜特殊感官與化學情報</span>
+      <h2>聞完襪子「張嘴呆滯」？揭開犁鼻器的秘密</h2>
+      <p class="lead">
+        看到貓咪聞完臭襪子或同類氣味後，突然抬頭、嘴巴微張、上唇向後翻起、眼神呆滯數秒？這不是被臭暈，而是動物行為學著名的<strong>裂唇嗅反應（Flehmen Response）</strong>。
+      </p>
+      <div class="grid-2">
+        <div class="card">
+          <h3>👃 啟動第二套嗅覺系統：犁鼻器</h3>
+          <ul>
+            <li><strong>器官位置：</strong>位於貓咪上顎前齒後方的特殊化學感應器官，稱為<strong>犁鼻器（Vomeronasal organ）</strong>。</li>
+            <li><strong>氣味分子導入：</strong>透過張嘴、上唇翻起並輕舔上顎，將含有氣味分子的空氣與唾液泵入上顎細小通道，送達犁鼻器精密解碼。</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h3>🕵️ 貓咪正在讀取什麼情報？</h3>
+          <ul>
+            <li>專門用來分析費洛蒙與複雜化學訊號（而非一般食物氣味）。</li>
+            <li>能精準判讀同類的<strong>性別、年齡、發情狀態、健康情況</strong>，甚至推測對方離開該地點的時間長短。</li>
+            <li><strong>飼主應對：</strong>屬於完全正常的生理情報收集，安靜觀察即可，無需驚慌打斷。</li>
+          </ul>
+        </div>
+      </div>
+      <div class="wiki-footer">
+        <span>知識庫對應條目：裂唇嗅反應與犁鼻器嗅覺密碼</span>
+        <span class="wiki-pill">[[flehmen-and-vomeronasal]]（raw/04）</span>
+      </div>
+    </div>
+
+    <!-- Slide 6 -->
+    <div class="slide">
+      <span class="tag">模組 05｜新手防雷總整理</span>
+      <h2>別再用人類邏輯猜貓！五大常見行為迷思破解</h2>
+      <table class="myth-table">
+        <thead>
+          <tr>
+            <th style="width:45%;">❌ 新手常見誤解（迷思）</th>
+            <th style="width:55%;">✅ 貓咪行為學真相</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="badge-no">迷思 1：</span>大力甩尾巴代表跟狗一樣很開心？</td>
+            <td><span class="badge-yes">真相：</span>代表<strong>不耐煩、煩躁或高度警戒</strong>，請立刻停止撫摸。</td>
+          </tr>
+          <tr>
+            <td><span class="badge-no">迷思 2：</span>只要發出呼嚕聲就代表很舒服快樂？</td>
+            <td><span class="badge-yes">真相：</span>也可能是<strong>恐懼、生病或疼痛</strong>時的自我安撫與修復機制。</td>
+          </tr>
+          <tr>
+            <td><span class="badge-no">迷思 3：</span>聞完臭襪子張嘴呆滯是被臭暈了？</td>
+            <td><span class="badge-yes">真相：</span>正常的<strong>裂唇嗅反應</strong>，正用上顎「犁鼻器」深度分析氣味。</td>
+          </tr>
+          <tr>
+            <td><span class="badge-no">迷思 4：</span>在貓砂盆外面亂尿是在故意報復主人？</td>
+            <td><span class="badge-yes">真相：</span>貓沒有報復心機，主因常為<strong>膀胱炎／結石排尿疼痛</strong>或環境壓力。</td>
+          </tr>
+          <tr>
+            <td><span class="badge-no">迷思 5：</span>做錯事大聲罵或打一下就能教乖？</td>
+            <td><span class="badge-yes">真相：</span>貓無法理解事後處罰，打罵只會引發<strong>恐懼與防禦性攻擊</strong>。</td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="wiki-footer">
+        <span>知識庫對應條目：新手飼主常見五大行為迷思破解</span>
+        <span class="wiki-pill">[[common-cat-myths]]（raw/01, 02, 04, 05）</span>
+      </div>
+    </div>
+
+    <!-- Slide 7 -->
+    <div class="slide">
+      <span class="tag">模組 06｜新手實戰行動清單</span>
+      <h2>建立信任與解決問題行為的黃金指南</h2>
+      <div class="grid-2">
+        <div class="card">
+          <h3>🤝 日常正向互動四大守則</h3>
+          <ul>
+            <li><strong>慢眨眼問候：</strong>用緩慢眨眼回應貓咪的友善眼神。</li>
+            <li><strong>尊重踩奶儀式：</strong>定期剪指甲或墊厚毛毯，不斥責推開。</li>
+            <li><strong>禁止手腳當逗貓棒：</strong>永遠使用長柄逗貓棒，避免幼貓養成咬人習慣。</li>
+            <li><strong>正向強化引導：</strong>用零食與稱讚獎勵正確行為，取代體罰。</li>
+          </ul>
+        </div>
+        <div class="card teal">
+          <h3>🏥 遇到問題行為的三步驟 SOP</h3>
+          <div style="margin-bottom:10px;">
+            <span class="step-badge">步驟 1：就醫排除疾病</span>
+            <p style="font-size:0.98rem;">突發亂尿、躲藏或哈氣，永遠先帶往動物醫院檢查是否為疼痛或疾病所致。</p>
+          </div>
+          <div style="margin-bottom:10px;">
+            <span class="step-badge">步驟 2：提供安全避風港</span>
+            <p style="font-size:0.98rem;">環境變動時提供高處跳台、紙箱或半封閉貓窩，絕不強行把躲藏的貓拖出來。</p>
+          </div>
+          <div>
+            <span class="step-badge">步驟 3：環境豐富化</span>
+            <p style="font-size:0.98rem;">增加貓抓板、垂直空間與規律遊戲，舒緩焦慮與壓力。</p>
+          </div>
+        </div>
+      </div>
+      <div class="wiki-footer">
+        <span>知識庫對應條目：正向互動指南、壓力與問題行為指南</span>
+        <span class="wiki-pill">[[bonding-and-interaction]] / [[stress-and-problem-behaviors]]</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button id="prevBtn" onclick="changeSlide(-1)">← 上一頁</button>
+    <div class="nav-center">
+      <div class="dots" id="dotsContainer"></div>
+      <span id="pageIndicator">1 / 7</span>
+    </div>
+    <button id="nextBtn" onclick="changeSlide(1)">下一頁 →</button>
+  </div>
+
+  <script>
+    let current = 0;
+    const slides = document.querySelectorAll('.slide');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageIndicator = document.getElementById('pageIndicator');
+    const progressFill = document.getElementById('progressFill');
+    const dotsContainer = document.getElementById('dotsContainer');
+
+    slides.forEach((_, idx) => {
+      const dot = document.createElement('div');
+      dot.className = 'dot' + (idx === 0 ? ' active' : '');
+      dot.onclick = () => { current = idx; updateUI(); };
+      dotsContainer.appendChild(dot);
+    });
+
+    function updateUI() {
+      slides.forEach((s, i) => s.classList.toggle('active', i === current));
+      document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === current));
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === slides.length - 1;
+      pageIndicator.textContent = `${current + 1} / ${slides.length}`;
+      progressFill.style.width = `${((current + 1) / slides.length) * 100}%`;
+    }
+
+    function changeSlide(dir) {
+      current = Math.max(0, Math.min(slides.length - 1, current + dir));
+      updateUI();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') changeSlide(1);
+      if (e.key === 'ArrowLeft' || e.key === 'PageUp') changeSlide(-1);
+    });
+
+    updateUI();
+  </script>
+</body>
+</html>
